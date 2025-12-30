@@ -14,8 +14,9 @@ from io import BytesIO
 
 from telegram import Update, InputFile, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import (
-    Application, CommandHandler, ConversationHandler, MessageHandler, ContextTypes, filters,
+    Application, ApplicationBuilder, CommandHandler, ConversationHandler, MessageHandler, ContextTypes, filters,
 )
+from telegram.request import HTTPXRequest
 
 # Импортируем API функции из PDF конструктора
 from pdf_costructor import (
@@ -177,7 +178,32 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 # ---------------------------- Main -------------------------------------------
 def main():
-    app = Application.builder().token(TOKEN).build()
+    # Создаем объект запроса с экстремально большими таймаутами
+    # для борьбы с ошибками telegram.error.TimedOut
+    proxy_url = os.getenv("BOT_PROXY_URL")  # Опциональный прокси для обхода блокировок
+
+    if proxy_url:
+        # Использование прокси (самый надежный способ при блокировках)
+        t_request = HTTPXRequest(
+            proxy_url=proxy_url,
+            connect_timeout=30,
+            read_timeout=30,
+            write_timeout=30,
+            pool_timeout=30
+        )
+    else:
+        # Без прокси, но с увеличенными таймаутами
+        t_request = HTTPXRequest(
+            connect_timeout=30,
+            read_timeout=30,
+            write_timeout=30,
+            pool_timeout=30
+        )
+
+    app = ApplicationBuilder() \
+        .token(TOKEN) \
+        .request(t_request) \
+        .build()
     conv = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
@@ -195,8 +221,14 @@ def main():
     print("🤖 Телеграм бот запущен!")
     print("📋 Поддерживаемые документы: /контракт, /гарантия, /карта, /одобрение (итальянские варианты тоже поддерживаются)")
     print("🔧 Использует PDF конструктор из pdf_costructor.py")
-    
-    app.run_polling()
+    print(f"⏱️  Таймауты увеличены до 30 сек для борьбы с TimedOut ошибками")
+    if proxy_url:
+        print(f"🌐 Используется прокси: {proxy_url}")
+    else:
+        print("🌐 Прокси не используется (для обхода блокировок установите BOT_PROXY_URL)")
+
+    # Чтобы не обрабатывать накопившийся мусор при запуске
+    app.run_polling(drop_pending_updates=True)
 
 if __name__ == '__main__':
     main()
