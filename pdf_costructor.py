@@ -585,11 +585,7 @@ def _add_images_to_pdf(pdf_bytes: bytes, template_name: str) -> BytesIO:
             
             overlay_canvas.showPage()
             
-            # Страница 2 - logo.png, печать и подпись
-            # Добавляем logo.png на странице 2
-            overlay_canvas.drawImage("logo.png", x_71, y_71, 
-                                   width=logo_scaled_width*mm, height=logo_scaled_height*mm,
-                                   mask='auto', preserveAspectRatio=True)
+            # Страница 2 - печать и подпись (логотип убран)
             # Добавляем seal_1.png в центр 590-й клетки
             seal_img = Image.open("seal_1.png")
             seal_width_mm = seal_img.width * 0.264583
@@ -633,7 +629,7 @@ def _add_images_to_pdf(pdf_bytes: bytes, template_name: str) -> BytesIO:
                                    mask='auto', preserveAspectRatio=True)
             
             overlay_canvas.save()
-            print(f"🖼️ Добавлены изображения для approvazione через ReportLab API (logo на обеих страницах, печать и подпись на странице 2)")
+            print(f"🖼️ Добавлены изображения для approvazione через ReportLab API (logo на странице 1, печать и подпись на странице 2)")
         
         elif template_name == 'contratto':
             # Страница 1 - добавляем company.png и logo.png
@@ -767,9 +763,9 @@ def fix_html_layout(template_name='contratto'):
         padding: 0;            /* Никаких дополнительных отступов */
     }
     
-    /* ИСПРАВЛЯЕМ ОТСТУПЫ BODY - ставим 2см слева и справа */
+    /* УБИРАЕМ ОТСТУП СПРАВА - оставляем отступ слева */
     .c8 {
-        padding: 0 2cm !important;  /* 2см слева и справа для текста */
+        padding: 0 0 0 2cm !important;  /* 2см слева, без отступа справа */
         max-width: none !important;  /* Убираем ограничение ширины */
     }
     
@@ -807,7 +803,7 @@ def fix_html_layout(template_name='contratto'):
         font-size: 9pt;  /* Уменьшаем размер шрифта для компактности */
         line-height: 1.0;  /* Компактная высота строки */
         margin: 0;
-        padding: 0 2cm;  /* 2см отступы слева и справа как в garanzia */
+        padding: 0;  /* Без отступов - текст на всю ширину как в contratto */
         overflow: hidden;  /* Предотвращаем выход за границы */
     }
     
@@ -913,6 +909,12 @@ def fix_html_layout(template_name='contratto'):
         color: transparent;
         font-family: Arial, sans-serif;
         box-sizing: border-box;
+    }
+
+    /* УБИРАЕМ ОТСТУПЫ ДЛЯ ТЕКСТА - используем всю ширину страницы как в contratto */
+    .c6 {
+        padding: 0 !important;  /* Без отступов - текст на всю ширину */
+        max-width: none !important;  /* Убираем ограничение ширины */
     }
     
     </style>
