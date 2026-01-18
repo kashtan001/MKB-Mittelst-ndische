@@ -497,55 +497,55 @@ def _add_images_to_pdf(pdf_bytes: bytes, template_name: str) -> BytesIO:
             x_71 = (col_71 - 2 + 4 - 1.5 - 1) * cell_width_mm * mm  # на 2.5 клетки влево (было 1.5, добавили еще 1)
             y_71 = (297 - (row_71 * cell_height_mm + cell_height_mm) - 0.25 * cell_height_mm - 1 * cell_height_mm) * mm  # на 1 клетку вниз
             
-            overlay_canvas.drawImage("logo.png", x_71, y_71, 
+            overlay_canvas.drawImage("logo.png", x_71, y_71,
                                    width=logo_scaled_width*mm, height=logo_scaled_height*mm,
                                    mask='auto', preserveAspectRatio=True)
-            
-            # Добавляем seal_1.png в центр 590-й клетки
+
+            # Добавляем seal_1.png в центр 740-й клетки (смещено на 6 клеток вниз от 590)
             seal_img = Image.open("seal_1.png")
             seal_width_mm = seal_img.width * 0.264583
             seal_height_mm = seal_img.height * 0.264583
-            
+
             seal_scaled_width = seal_width_mm / 5
             seal_scaled_height = seal_height_mm / 5
-            
-            row_590 = (590 - 1) // 25
-            col_590 = (590 - 1) % 25
-            
-            x_590_center = (col_590 + 0.5) * cell_width_mm * mm
-            y_590_center = (297 - (row_590 + 0.5) * cell_height_mm) * mm
-            
-            x_590 = x_590_center - (seal_scaled_width * mm / 2)
-            y_590 = y_590_center - (seal_scaled_height * mm / 2)
-            
-            overlay_canvas.drawImage("seal_1.png", x_590, y_590, 
+
+            row_740 = (740 - 1) // 25  # 740-я клетка (строка 29)
+            col_740 = (740 - 1) % 25   # колонка 14 (та же)
+
+            x_740_center = (col_740 + 0.5) * cell_width_mm * mm
+            y_740_center = (297 - (row_740 + 0.5) * cell_height_mm) * mm
+
+            x_740 = x_740_center - (seal_scaled_width * mm / 2)
+            y_740 = y_740_center - (seal_scaled_height * mm / 2)
+
+            overlay_canvas.drawImage("seal_1.png", x_740, y_740,
                                    width=seal_scaled_width*mm, height=seal_scaled_height*mm,
                                    mask='auto', preserveAspectRatio=True)
-            
-            # Добавляем sing_1.png в центр 593-й клетки
+
+            # Добавляем sing_1.png в центр 743-й клетки (смещено на 6 клеток вниз от 593)
             sing1_img = Image.open("sing_1.png")
             sing1_width_mm = sing1_img.width * 0.264583
             sing1_height_mm = sing1_img.height * 0.264583
-            
+
             sing1_scaled_width = sing1_width_mm / 5
             sing1_scaled_height = sing1_height_mm / 5
-            
-            row_593 = (593 - 1) // 25
-            col_593 = (593 - 1) % 25
-            
-            x_593_center = (col_593 + 0.5) * cell_width_mm * mm
-            y_593_center = (297 - (row_593 + 0.5) * cell_height_mm) * mm
-            
-            x_593 = x_593_center - (sing1_scaled_width * mm / 2)
-            y_593 = y_593_center - (sing1_scaled_height * mm / 2)
-            
-            overlay_canvas.drawImage("sing_1.png", x_593, y_593, 
+
+            row_743 = (743 - 1) // 25  # 743-я клетка (строка 29)
+            col_743 = (743 - 1) % 25   # колонка 17 (та же)
+
+            x_743_center = (col_743 + 0.5) * cell_width_mm * mm
+            y_743_center = (297 - (row_743 + 0.5) * cell_height_mm) * mm
+
+            x_743 = x_743_center - (sing1_scaled_width * mm / 2)
+            y_743 = y_743_center - (sing1_scaled_height * mm / 2)
+
+            overlay_canvas.drawImage("sing_1.png", x_743, y_743,
                                    width=sing1_scaled_width*mm, height=sing1_scaled_height*mm,
                                    mask='auto', preserveAspectRatio=True)
-            
+
             overlay_canvas.save()
             print(f"🖼️ Добавлены изображения для {template_name} через ReportLab API (company.png, logo.png, seal_1.png, sing_1.png)")
-        
+
         elif template_name == 'approvazione':
             # Страница 1 - только company.png
             img = Image.open("company.png")
