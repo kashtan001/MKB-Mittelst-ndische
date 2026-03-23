@@ -5,7 +5,7 @@
 #   /garanzia      — письмо о гарантийном взносе
 #   /carta         — письмо о выпуске карты
 #   /approvazione  — письмо об одобрении кредита
-#   /компенсация — GARANTIE (MKB), DE (garantie_mkb); файл: Garantie_<safe>.pdf (алиасы в Regex: /compensazione, /гарантия_de, /garantie)
+#   /компенсация — GARANTIE (MKB), DE (garantie_mkb); файл: Entschädigungsschreiben_<safe>.pdf (алиасы в Regex: /compensazione, /гарантия_de, /garantie)
 # -----------------------------------------------------------------------------
 # Интеграция с pdf_costructor.py API
 # -----------------------------------------------------------------------------
@@ -152,7 +152,7 @@ async def ask_grtm_entsch(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     try:
         buf = build_garantie_mkb(data)
         safe = _safe_filename_part(context.user_data['von'])
-        await update.message.reply_document(InputFile(buf, f"Garantie_{safe}.pdf"))
+        await update.message.reply_document(InputFile(buf, f"Entschädigungsschreiben_{safe}.pdf"))
     except Exception as e:
         logger.error(f"Ошибка генерации garantie_mkb: {e}")
         await update.message.reply_text(f"Ошибка создания документа: {e}")
